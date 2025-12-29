@@ -33,8 +33,6 @@ if not exist "exclusions\C.txt" (
     echo $Recycle.Bin
     echo $WinREAgent
     echo $WINDOWS.~BT
-    echo Games
-    echo GOG Games
     echo inetpub
     echo Log Files
     echo OneDriveTemp
@@ -90,8 +88,6 @@ if not exist "exclusions\Program Files.txt" (
 if not exist "exclusions\Program Files (x86).txt" (
     (
     echo Application Verifier
-    echo Battle.net
-    echo Steam
     echo Common Files
     echo HTML Help Workshop
     echo IIS
@@ -209,7 +205,6 @@ if not exist "exclusions\UserProfile_Folders.txt" (
     echo PrintHood
     echo Recent
     echo SendTo
-    echo Downloads
     echo Favorites
     echo Contacts
     echo 3D Objects
