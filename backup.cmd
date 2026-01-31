@@ -163,6 +163,7 @@ if not exist "exclusions\Local.txt" (
     echo gegl-0.4
     echo GHISLER
     echo History
+    echo JetBrains
     echo Microsoft
     echo Package Cache
     echo Packages
