@@ -64,6 +64,7 @@ if not exist "exclusions\Program Files.txt" (
     echo Microsoft SQL Server
     echo Microsoft SQL Server Compact Edition
     echo Microsoft Visual Studio 11.0
+    echo Microsoft Visual Studio
     echo ModifiableWindowsApps
     echo MSBuild
     echo Oracle
@@ -100,6 +101,7 @@ if not exist "exclusions\Program Files (x86).txt" (
     echo Microsoft SQL Server
     echo Microsoft SQL Server Compact Edition
     echo Microsoft Visual Studio 11.0
+    echo Microsoft Visual Studio
     echo Microsoft WCF Data Services
     echo Microsoft Web Tools
     echo Microsoft.NET
@@ -141,6 +143,7 @@ if not exist "exclusions\ProgramData.txt" (
     echo PreEmptive Solutions
     echo regid.1991-06.com.microsoft
     echo SoftwareDistribution
+    echo Microsoft DevDiv
     echo ssh
     echo USOPrivate
     echo USOShared
@@ -164,6 +167,7 @@ if not exist "exclusions\Local.txt" (
     echo GHISLER
     echo History
     echo JetBrains
+    echo lm-studio-updater
     echo Microsoft
     echo Package Cache
     echo Packages
