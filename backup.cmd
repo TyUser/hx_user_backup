@@ -202,6 +202,9 @@ if not exist "exclusions\Roaming.txt" (
 
 if not exist "exclusions\UserProfile_Folders.txt" (
     (
+    echo .cache
+    echo .cargo
+    echo .rustup
     echo AppData
     echo Application Data
     echo Cookies
@@ -221,6 +224,7 @@ if not exist "exclusions\UserProfile_Folders.txt" (
 
 if not exist "exclusions\User_Files.txt" (
     (
+    echo .python_history
     echo NTUSER.DAT
     echo ntuser.ini
     echo desktop.ini
