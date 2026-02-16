@@ -20,6 +20,8 @@ set "exclusions_Roaming=exclusions\Roaming.txt"
 set "exclusions_UserProfile_Folders=exclusions\UserProfile_Folders.txt"
 set "exclusions_User_File=exclusions\User_Files.txt"
 
+cd /d "%~dp0"
+
 if not exist "exclusions\" (
     mkdir "exclusions" 2>nul
 )
