@@ -163,6 +163,7 @@ if not exist "exclusions\Local.txt" (
     echo CrashDumps
     echo CrashReportClient
     echo D3DSCache
+    echo ElevatedDiagnostics
     echo enchant
     echo fontconfig
     echo gegl-0.4
@@ -171,6 +172,8 @@ if not exist "exclusions\Local.txt" (
     echo JetBrains
     echo lm-studio-updater
     echo Microsoft
+    echo Microsoft SDKs
+    echo NEO
     echo Package Cache
     echo Packages
     echo PeerDistRepub
