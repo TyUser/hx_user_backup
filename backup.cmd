@@ -97,6 +97,7 @@ if not exist "exclusions\Program Files (x86).txt" (
     echo IIS Express
     echo Internet Explorer
     echo Microsoft
+    echo Microsoft Games for Windows - LIVE
     echo Microsoft ASP.NET
     echo Microsoft Help Viewer
     echo Microsoft SDKs
