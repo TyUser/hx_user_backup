@@ -2,8 +2,6 @@
 setlocal enabledelayedexpansion
 :: Скрипт создает резервную копию пользовательских файлов и некоторых программ. Запускать только со стороннего накопителя большего обьема.
 
-set XOPT=/V /D /H /J /E /Y /R
-
 set "LOCAL=Users\%USERNAME%\AppData\Local"
 set "LOCALLOW=Users\%USERNAME%\AppData\LocalLow"
 set "ROAMING=Users\%USERNAME%\AppData\Roaming"
@@ -234,6 +232,8 @@ if not exist "exclusions\User_Files.txt" (
     echo desktop.ini
     echo thumbs.db
     echo IconCache.db
+    echo recently-used.xbel
+    echo resmon.resmoncfg
     ) > "exclusions\User_Files.txt"
 )
 
@@ -244,31 +244,31 @@ if not exist C:\ (
 )
 
 echo -- C:\ --
-call :ProcessFolder "C:\" "Backup" "%exclusions_C%" "%XOPT%"
+call :ProcessFolder "C:\" "Backup" "%exclusions_C%"
 
 echo -- %ProgramFiles% --
-call :ProcessFolder "%ProgramFiles%" "Backup\Program Files" "%exclusions_ProgramFiles%" "%XOPT%"
+call :ProcessFolder "%ProgramFiles%" "Backup\Program Files" "%exclusions_ProgramFiles%"
 
 echo -- %ProgramFiles(x86)% --
-call :ProcessFolder "%ProgramFiles(x86)%" "Backup\Program Files (x86)" "%exclusions_ProgramFiles_x86%" "%XOPT%"
+call :ProcessFolder "%ProgramFiles(x86)%" "Backup\Program Files (x86)" "%exclusions_ProgramFiles_x86%"
 
 echo -- %ProgramFiles(x86)%\Common Files --
-call :ProcessFolder "%ProgramFiles(x86)%\Common Files" "Backup\Program Files (x86)\Common Files" "%exclusions_CommonFiles%" "%XOPT%"
+call :ProcessFolder "%ProgramFiles(x86)%\Common Files" "Backup\Program Files (x86)\Common Files" "%exclusions_CommonFiles%"
 
 echo -- C:\ProgramData --
-call :ProcessFolder "C:\ProgramData" "Backup\ProgramData" "%exclusions_ProgramData%" "%XOPT%"
+call :ProcessFolder "C:\ProgramData" "Backup\ProgramData" "%exclusions_ProgramData%"
 
 echo -- %LOCAL% --
-call :ProcessFolder "C:\%LOCAL%" "Backup\%LOCAL%" "%exclusions_Local%" "%XOPT%"
+call :ProcessFolder "C:\%LOCAL%" "Backup\%LOCAL%" "%exclusions_Local%"
 
 echo -- %LOCALLOW% --
-call :ProcessFolder "C:\%LOCALLOW%" "Backup\%LOCALLOW%" "%exclusions_LocalLow%" "%XOPT%"
+call :ProcessFolder "C:\%LOCALLOW%" "Backup\%LOCALLOW%" "%exclusions_LocalLow%"
 
 echo -- %ROAMING% --
-call :ProcessFolder "C:\%ROAMING%" "Backup\%ROAMING%" "%exclusions_Roaming%" "%XOPT%"
+call :ProcessFolder "C:\%ROAMING%" "Backup\%ROAMING%" "%exclusions_Roaming%"
 
 echo -- %USERPROFILE% --
-call :ProcessFolder "%USERPROFILE%" "Backup\Users\%USERNAME%" "%exclusions_UserProfile_Folders%" "%XOPT%"
+call :ProcessFolder "%USERPROFILE%" "Backup\Users\%USERNAME%" "%exclusions_UserProfile_Folders%"
 
 call :CopyFiles "%USERPROFILE%" "Backup\Users\%USERNAME%" "%exclusions_User_File%"
 call :CopyFiles "%USERPROFILE%\AppData\Local" "Backup\%LOCAL%" "%exclusions_User_File%"
@@ -278,31 +278,30 @@ endlocal
 exit /b
 
 :ProcessFolder
-setlocal
+setlocal DisabledelayedExpansion
 set "source=%~1"
 set "dest=%~2"
 set "exclusions_list=%~3"
-set "xcopy_opts=%~4"
 
 if not exist "%dest%" (
-    mkdir "%dest%"
-)
+    mkdir "%dest%" 
+ )
 
-for /d %%F in ("%source%\*") do (
-    set "folder=%%~nxF"
-    
+for /f "delims=" %%D in ('dir /b /ad "%source%" 2^>nul') do (
+    set "folder=%%~nxD"
+    setlocal EnabledelayedExpansion
     findstr /i /x /c:"!folder!" "%exclusions_list%" >nul
     if errorlevel 1 (
-        echo Copying: !folder!
-        XCOPY "%%F\*.*" "%dest%\!folder!\" %xcopy_opts%
+        echo Copying folder: !folder!
+        robocopy "%source%\!folder!" "%dest%\!folder!" *.* /E /COPY:DT /R:0 /W:0 >nul
     )
+    endlocal
 )
-
 endlocal
 exit /b
 
 :CopyFiles
-setlocal
+setlocal DisabledelayedExpansion
 set "source=%~1"
 set "dest=%~2"
 set "exclusions_list=%~3"
@@ -314,12 +313,13 @@ if not exist "%dest%" (
 for %%F in ("%source%\*") do (
     if not exist "%%F\" (
         set "filename=%%~nxF"
-
-        findstr /i /x /c:"!filename!" "%exclusions_list%"
+        setlocal EnabledelayedExpansion
+        findstr /i /x /c:"!filename!" "%exclusions_list%" >nul
         if errorlevel 1 (
             echo Copying file: !filename!
-            copy /Y "%%F" "%dest%\" >nul
+            robocopy "%source%\." "%dest%\." "%%~nxF" /COPY:DT /R:0 /W:0 >nul
         )
+        endlocal
     )
 )
 
