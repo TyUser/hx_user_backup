@@ -9,14 +9,15 @@ set "ROAMING=Users\%USERNAME%\AppData\Roaming"
 set "exclusions_C=exclusions\C.txt"
 set "exclusions_ProgramFiles=exclusions\Program Files.txt"
 set "exclusions_ProgramFiles_x86=exclusions\Program Files (x86).txt"
-set "exclusions_CommonFiles=exclusions\Program Files (x86) Common Files.txt"
+set "exclusions_CommonFiles_x86=exclusions\Program Files (x86) Common Files.txt"
+set "exclusions_CommonFiles=exclusions\Program Files Common Files.txt"
 set "exclusions_ProgramData=exclusions\ProgramData.txt"
 set "exclusions_Local=exclusions\Local.txt"
 set "exclusions_LocalLow=exclusions\LocalLow.txt"
 set "exclusions_Roaming=exclusions\Roaming.txt"
 
 set "exclusions_UserProfile_Folders=exclusions\UserProfile_Folders.txt"
-set "exclusions_User_File=exclusions\User_Files.txt"
+set "exclusions_User_Files=exclusions\User_Files.txt"
 
 cd /d "%~dp0"
 
@@ -134,6 +135,15 @@ if not exist "exclusions\Program Files (x86) Common Files.txt" (
     ) > "exclusions\Program Files (x86) Common Files.txt"
 )
 
+if not exist "exclusions\Program Files Common Files.txt" (
+    (
+    echo Microsoft
+    echo Microsoft Shared
+    echo Services
+    echo System
+    ) > "exclusions\Program Files Common Files.txt"
+)
+
 if not exist "exclusions\ProgramData.txt" (
     (
     echo Intel
@@ -249,11 +259,16 @@ call :ProcessFolder "C:\" "Backup" "%exclusions_C%"
 echo -- %ProgramFiles% --
 call :ProcessFolder "%ProgramFiles%" "Backup\Program Files" "%exclusions_ProgramFiles%"
 
-echo -- %ProgramFiles(x86)% --
-call :ProcessFolder "%ProgramFiles(x86)%" "Backup\Program Files (x86)" "%exclusions_ProgramFiles_x86%"
+if not exist "%ProgramFiles(x86)%"=="" (
+    echo -- %ProgramFiles(x86)% --
+    call :ProcessFolder "%ProgramFiles(x86)%" "Backup\Program Files (x86)" "%exclusions_ProgramFiles_x86%"
 
-echo -- %ProgramFiles(x86)%\Common Files --
-call :ProcessFolder "%ProgramFiles(x86)%\Common Files" "Backup\Program Files (x86)\Common Files" "%exclusions_CommonFiles%"
+    echo -- %ProgramFiles(x86)%\Common Files --
+    call :ProcessFolder "%ProgramFiles(x86)%\Common Files" "Backup\Program Files (x86)\Common Files" "%exclusions_CommonFiles_x86%"
+)
+
+echo -- %ProgramFiles%\Common Files --
+call :ProcessFolder "%ProgramFiles%\Common Files" "Backup\Program Files\Common Files" "%exclusions_CommonFiles%"
 
 echo -- C:\ProgramData --
 call :ProcessFolder "C:\ProgramData" "Backup\ProgramData" "%exclusions_ProgramData%"
@@ -270,8 +285,8 @@ call :ProcessFolder "C:\%ROAMING%" "Backup\%ROAMING%" "%exclusions_Roaming%"
 echo -- %USERPROFILE% --
 call :ProcessFolder "%USERPROFILE%" "Backup\Users\%USERNAME%" "%exclusions_UserProfile_Folders%"
 
-call :CopyFiles "%USERPROFILE%" "Backup\Users\%USERNAME%" "%exclusions_User_File%"
-call :CopyFiles "%USERPROFILE%\AppData\Local" "Backup\%LOCAL%" "%exclusions_User_File%"
+call :CopyFiles "%USERPROFILE%" "Backup\Users\%USERNAME%" "%exclusions_User_Files%"
+call :CopyFiles "%USERPROFILE%\AppData\Local" "Backup\%LOCAL%" "%exclusions_User_Files%"
 
 timeout /t 10
 endlocal
@@ -284,8 +299,8 @@ set "dest=%~2"
 set "exclusions_list=%~3"
 
 if not exist "%dest%" (
-    mkdir "%dest%" 
- )
+    mkdir "%dest%"
+)
 
 for /f "delims=" %%D in ('dir /b /ad "%source%" 2^>nul') do (
     set "folder=%%~nxD"
